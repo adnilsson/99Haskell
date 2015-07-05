@@ -1,3 +1,6 @@
+-- Solutions to: https://wiki.haskell.org/99_questions/1_to_10
+-- Not yet tested with quickCheck
+
 
 -- 1. (*) Find the last element of a list
 -----
@@ -32,11 +35,34 @@ myReverse = foldl(\acc x -> x:acc) []
 isPalindrome:: (Eq a) => [a] -> Bool
 isPalindrome xs = xs == myReverse xs
 
--- 7. (*) Flatten a nested list structure
+-- 7. (**) Flatten a nested list structure
 -----
 data NestedList a = Elem a | List [NestedList a]
 
 flatten:: NestedList a -> [a] 
 flatten (Elem x)        = [x]
 flatten (List [])       = []
-flatten (List (x:xs))   = 
+flatten (List (x:xs))   = flatten x ++ flatten (List xs)
+
+-- 8. (**) Eliminate consecutive duplicates
+----
+compress:: (Eq a) => [a] -> [a]
+compress []     = []
+compress [x]    = [x]
+compress (x1:x2:xs) 
+ | x1 == x2     = compress (x1:xs)
+ | otherwise    = x1:compress (x2:xs)
+    
+-- 9. (**) Pack consecutive duplicate list elements into sublists
+----
+pack:: (Eq a) => [a] -> [[a]] 
+pack []     = []
+pack (x:xs) = duplicates:pack(tail') 
+    where   duplicates  = fst $ span (==x) (x:xs) -- sublist
+            tail'       = snd $ span (==x) (x:xs) 
+
+-- 10. (*) Run-length encoding of a list (use 9.)
+----
+encode:: (Eq a) => [a] -> [(Int, a)]
+encode xs = zip (map length xs') $ map head xs'
+    where   xs' = pack xs
