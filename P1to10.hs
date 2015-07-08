@@ -1,6 +1,7 @@
 -- Solutions to: https://wiki.haskell.org/99_questions/1_to_10
 -- Not yet tested with quickCheck
 
+module P1to10 where
 
 -- 1. (*) Find the last element of a list
 -----
