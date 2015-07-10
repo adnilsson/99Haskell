@@ -40,3 +40,42 @@ makeElem n x
     | n > 1     = Multiple n x
     | n == 1    = Single x
     | otherwise = error "n must be non-negative"
+
+-- (*) 14. Duplicate every list element
+----
+dupli:: [a] -> [a]
+dupli = foldr (\x acc -> x:x:acc) [] 
+
+-- (**) 15. Replicate all list elements a given number of times
+----
+repli:: Int -> [a] -> [a]
+repli n xs = foldr (\x acc -> (repli' n x) ++ acc) [] xs
+    where repli' n x = take n $ repeat x
+
+-- (**) 16. Drop every n-th element from a list 
+---- 
+dropEvery:: [a] -> Int -> [a]
+dropEvery xs n  = dropEvery' xs n n
+
+dropEvery':: [a] -> Int -> Int -> [a]
+dropEvery' [] _ _       = []
+dropEvery' (x:xs) 1 n  = dropEvery' xs n n
+dropEvery' (x:xs) n n0  
+    | n > 1     = x:dropEvery' xs (n-1) n0
+    | otherwise = []
+
+-- (*) 17. Split a list into two parts
+---- It works, but I don't like it.
+-----
+split:: [a] -> Int -> ([a],[a])
+split xs n  = head $ zip ([take' xs n]) ([drop' xs n])
+
+drop':: [a] -> Int -> [a]
+drop' xs 0  = xs
+drop' [] _  = []
+drop' (x:xs) n = drop' xs (n-1) 
+
+take':: [a] -> Int -> [a]
+take' xs 0  = [] 
+take' [] _  = []
+take' (x:xs) n = x:take' xs (n-1)
