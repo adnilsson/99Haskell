@@ -79,3 +79,34 @@ take':: [a] -> Int -> [a]
 take' xs 0  = [] 
 take' [] _  = []
 take' (x:xs) n = x:take' xs (n-1)
+
+-- (**) 18. Extract a slice from a list 
+----
+
+slice:: [a] -> Int -> Int -> [a]
+slice xs 1 0        = []
+slice (x:xs) 1 m    = x:slice xs 1 (m-1) 
+slice (x:xs) n m
+    | m > n         = slice xs (n-1) (m-1)
+    | otherwise     = []
+
+-- (**) 19. Rotate a list n-times to the left
+----
+rotate:: [a] -> Int -> [a] 
+rotate xs n         = drop (modulo) xs ++ take (modulo) xs 
+    where modulo    = n `mod` (length xs) 
+
+-- (*) 20. Remove the K'th element from a list (index from 1) 
+----
+removeAt:: Int -> [a] -> (Maybe a, Maybe [a])
+removeAt n xs       = removeAt' n (Just (head xs), Just xs)
+
+removeAt':: Int -> (Maybe a, Maybe [a]) -> (Maybe a, Maybe [a]) 
+removeAt' _ (Just x, Just [])   = (Nothing, Just [])    -- List is empty
+removeAt' 1 (_, Just (x:xs))    = (Just x, Just xs)     -- Element found 
+removeAt' n (Just a, Just (x:xs)) 
+    | n < 1     = (Nothing, Just (x:xs)) -- Negative indices doesn't exist
+    | otherwise = let (b, xss)  = removeAt' (n-1) (Just a, Just xs) 
+                    in case xss of 
+                        Just xss' -> (b, Just (x:xss'))   
+                        Nothing   -> (b, Nothing)
